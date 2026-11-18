@@ -1,9 +1,13 @@
+import { lazy, Suspense } from 'react';
 import { baseAsset, formatCompact, formatPercent, formatPrice } from '../lib/format';
 import { store, useStore } from '../lib/store';
 import { INTERVALS } from '../lib/types';
 import { useKlines } from '../lib/useKlines';
-import { PriceChart } from './PriceChart';
+
 import { Signals } from './Signals';
+
+// The chart library is the largest dependency; load it after the watchlist has painted.
+const PriceChart = lazy(() => import('./PriceChart').then((m) => ({ default: m.PriceChart })));
 
 export function ChartPanel() {
   const selected = useStore((s) => s.selected);
@@ -17,12 +21,15 @@ export function ChartPanel() {
       <div className="head">
         <div>
           <h1>{baseAsset(selected)}<small> / USDT</small></h1>
-          {ticker && (
-            <div className="big">
-              <span key={ticker.updated} className={ticker.dir > 0 ? 'tick-up' : ticker.dir < 0 ? 'tick-down' : ''}>{formatPrice(ticker.price)}</span>
-              <span className={up ? 'pos' : 'neg'}>{formatPercent(ticker.change)}</span>
-            </div>
-          )}
+          {/* Always rendered, with a fixed height, so the chart does not jump when the first price arrives. */}
+          <div className="big">
+            {ticker && (
+              <>
+                <span key={ticker.updated} className={ticker.dir > 0 ? 'tick-up' : ticker.dir < 0 ? 'tick-down' : ''}>{formatPrice(ticker.price)}</span>
+                <span className={up ? 'pos' : 'neg'}>{formatPercent(ticker.change)}</span>
+              </>
+            )}
+          </div>
         </div>
         <div className="tabs" role="group" aria-label="Candle interval">
           {INTERVALS.map((i) => (
@@ -33,16 +40,16 @@ export function ChartPanel() {
         </div>
       </div>
 
-      {ticker && (
-        <dl className="stats">
-          <div><dt>24h high</dt><dd>{formatPrice(ticker.high)}</dd></div>
-          <div><dt>24h low</dt><dd>{formatPrice(ticker.low)}</dd></div>
-          <div><dt>24h volume</dt><dd>${formatCompact(ticker.volume)}</dd></div>
-        </dl>
-      )}
+      <dl className="stats">
+        <div><dt>24h high</dt><dd>{ticker ? formatPrice(ticker.high) : '-'}</dd></div>
+        <div><dt>24h low</dt><dd>{ticker ? formatPrice(ticker.low) : '-'}</dd></div>
+        <div><dt>24h volume</dt><dd>{ticker ? `$${formatCompact(ticker.volume)}` : '-'}</dd></div>
+      </dl>
 
       <div className="chartwrap">
-        <PriceChart candles={candles} loadedKey={loadedKey} />
+        <Suspense fallback={null}>
+          <PriceChart candles={candles} loadedKey={loadedKey} />
+        </Suspense>
         {loading && <div className="overlay">Loading chart&hellip;</div>}
         {error && <div className="overlay err">Could not load candles. {error}</div>}
       </div>

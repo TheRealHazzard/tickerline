@@ -67,12 +67,12 @@ button { cursor: pointer; }
 .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
 .head h1 { margin: 0; font-size: 22px; }
 .head h1 small { color: var(--muted); font-size: 14px; font-weight: 500; }
-.big { display: flex; align-items: baseline; gap: 12px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.big { min-height: 45px; display: flex; align-items: baseline; gap: 12px; font-size: 30px; font-weight: 700; font-variant-numeric: tabular-nums; }
 .big .pos, .big .neg { font-size: 15px; font-weight: 600; }
 .tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 .tabs button { background: transparent; border: 0; padding: 6px 14px; color: var(--muted); }
 .tabs button.on { background: var(--line); color: var(--text); }
-.stats { display: flex; gap: 28px; margin: 14px 0; flex-wrap: wrap; }
+.stats { min-height: 44px; display: flex; gap: 28px; margin: 14px 0; flex-wrap: wrap; }
 .stats div { display: grid; }
 .stats dt { color: var(--muted); font-size: 12px; }
 .stats dd { margin: 0; font-weight: 600; font-variant-numeric: tabular-nums; }
