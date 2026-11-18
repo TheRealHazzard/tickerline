@@ -4,6 +4,8 @@ A real-time crypto market dashboard. Live prices stream over a WebSocket, candle
 
 **Live demo: https://therealhazzard.github.io/tickerline/**
 
+Lighthouse (mobile, live site, Nov 2026): performance 97, accessibility 100, best practices 100, SEO 100.
+
 ![Tickerline dashboard showing a live watchlist, a BTC candlestick chart and indicator signals](docs/screenshot.png)
 
 ## Features
